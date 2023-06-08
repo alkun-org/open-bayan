@@ -1,2 +1,5 @@
 # open-bayan
-Bayan Open Protocol for Islamic Project
+Open Bayan is an Open protocol for Islamic Project.
+
+
+*Al-Kun architecture is almost entirely based on this protocol.*
