@@ -1,0 +1,74 @@
+// Commonly used Types & Obiects
+
+Version NUM # Version in CalVer format of YY.MM[DD]
+
+Uid STR <4:12> /^[a-zA-Z0-9]+$/        // Unique Id, eg: abdulla
+Uuid STR <36:36> /^[a-z0-9-]+$/         // UUID v7, time sortable
+
+Tag STR <2:40> /^[a-z0-9][a-z0-9\-]*[a-z0-9]$/   # Lower-case and hypen only, eg: quran-audio
+
+Email STR <:255> /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/   # Email property
+
+// ERI Entity-Resource-Identifier
+// format => user . entityClass <. entityId> / <entry1 , entry2 , ...>
+// eg 1: ahmad.story.12345                 // story.id object inside ahmad dir
+// eg 2: ahmad.story.12345/cover.jpg       // cover image inside story.id object
+// eg 3: ahmad.story.12345/title,tag       // get title and tag inside story.id object
+
+Eri STR  /^[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)?(\.[a-zA-Z0-9-]+)?(\/.+)?$/     // Eri is case-sensitive
+
+
+// Localizations
+Country STR <3:3> /^[A-Z]+$/            # ISO 3166-3 (alpha-3) country codes
+Language STR <3:3> /^[a-z]+$/           # Language codes from the ISO 639-3 standard
+Timezone STR                            # Timezone in format <(+01:00) location/description>
+Currency STR <3:3> /^[A-Z]+$/           # ISO 4217 currency code
+
+Media = {
+    mediaType STR
+    content STR     # base64 string in json, binary in CBOR
+    url URL
+    REQUIRED mediaType & content | url
+}
+
+Image EXTEND Media & {
+    mediaType ENUM ("image/jpeg", "image/png")
+    width NUM
+    height NUM
+}
+
+// control block entities, remove control to enable them
+Control ENUM ("pending" "suspend" "removal")
+
+Data = {       # Basic entity data structure
+    eri = Eri
+    createdAt DATE
+    updatedAt DATE
+    control = Control
+}
+
+Stat = {
+    view NUM            // total view from platform/get
+}
+
+Reaction = {
+    # Audience reaction
+    like EXTEND Uid []               # List of Users
+    dislike EXTEND Uid []            # List of Users
+    likeCount NUM
+    dislikeCount NUM
+}
+
+React ENUM ("like" "dislike")
+
+Poll = {
+    option = {
+        description STR
+        voteCount NUM
+    }[:10]
+
+    voter EXTEND Eri []              # List of Users
+    period NUM   # in seconds before poll close
+}
+
+PollVote NUM   # Index of options

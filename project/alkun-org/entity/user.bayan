@@ -1,0 +1,170 @@
+IMPORT ct "https://alkun.org/bayan/common-type.bayan"
+IMPORT api_ "https://alkun.org/bayan/api.bayan"
+
+entity = {
+    id = "user"
+    name = "User account"
+    version = 23.06
+    createdAt = "2023-06-01"
+    status = "draft"
+
+    data EXTEND ct.Data & {
+        displayName STR <4:32>
+        image = ct.Image
+        thumbnail = ct.Image            # 80x80 pixels JPEG
+
+        // preference
+        language = ct.Language
+        timezone = ct.Timezone
+        currency = ct.Currency
+
+        private = {                     # owner with correct apiKey can view this
+            recoveryQuestion STR <:64>
+            apiKey STR                  # Your master key to use available APIs
+            apiKeyCreatedAt             # API key creation/refresh date
+            lastSignIn DATE             # to check account inactive or spam
+            conduct NUM                 # user conduct scores, bad scores may get suspend, \
+                                        good scores may skip submissions approval
+
+            permission EXTEND ct.Tag []     # for various things such as moderator privilege
+        }
+
+        protected = {                   # no external access
+            // credential
+            password STR <8:12> /^[a-zA-Z0-9_]+$/
+            recoveryAnswer STR <:32>    # Make sure recovery answer is personal and memorable to you, \
+                                        it's the only way to recover your home. \
+                                        Answer is case insensitive
+        }
+    }
+
+    journal = {
+        description = {
+            greeting = "Sample journal entry for new user, you may delete this"
+        }
+    }
+
+    api = {
+        signUp = {
+            request = {
+                eri = ct.Eri
+                displayName = entity.data.displayName
+                password = entity.data.protected.password
+                recoveryQuestion = entity.data.private.recoveryQuestion
+                recoveryAnswer = entity.data.protected.recoveryAnswer
+                recaptchav3 = {
+                    token STR
+                    REQUIRED token
+                }
+                REQUIRED eri & displayName & password & recoveryQuestion & recoveryAnswer & recaptchav3               
+            }
+
+            response = {
+                apiKey STR
+            }
+        }
+
+        signIn = {
+            request = {
+                eri = ct.Eri
+                password = entity.data.protected.password
+                REQUIRED eri & password
+            }
+            response = {
+                displayName = entity.data.displayName
+                apiKey STR
+            }
+        }
+
+        refreshApiKey = {
+            request = {  # Generate new Api key
+                apiKey STR
+                REQUIRED apiKey
+            }
+            response = {
+                apiKey STR
+                createdAt DATE
+            }
+        }
+
+        changePassword = {
+            request = {
+                apiKey STR
+                currentPassword = entity.data.protected.password
+                newPassword = entity.data.protected.password
+                REQUIRED apiKey & currentPassword & newPassword
+            }
+        }
+
+        recoveryQuestion = {
+            request = {
+                eri = ct.Eri
+                REQUIRED userId
+            }
+            response = {
+                question STR
+            }
+        }
+
+        recoveryAnswer = {
+            request = {
+                eri = ct.Eri
+                answer STR
+                REQUIRED eri & answer
+            }
+            response = {
+                temporaryPassword = entity.data.protected.password
+            }
+        }
+
+        closeAccount = {            # No question/reason should be asked
+            request = {               # Request for permanently delete account
+                apiKey STR
+                REQUIRED apiKey
+            }
+        }
+
+        update = {
+            request = {
+                apiKey STR
+                data = {
+                    displayName = entity.data.displayName
+                    language = entity.data.language
+                    timezone = entity.data.timezone
+                    currency = entity.data.currency
+                    NULLABLE language & currency & timezone
+                }
+                REQUIRED apiKey & data
+            }
+        }
+
+        changeImage = {
+            request = {
+                apiKey STR
+                image = ct.Image
+                REQUIRED apiKey & image
+            }
+            response = {
+                image = ct.Image
+                thumbnail = ct.Image
+            }
+        }
+
+        deleteImage = {
+            request = {
+                apiKey STR
+                REQUIRED apiKey
+            }
+        }
+
+        changePermission = {
+            request = {  # You must have admin permission to call this
+                eri = ct.Eri
+                apiKey STR
+                grant EXTEND ct.Tag []          # permissions to grant
+                revoke EXTEND ct.Tag []         # permissions to revoke
+                REQUIRED eri & apiKey & grant | revoke
+            }
+        }
+    }
+}

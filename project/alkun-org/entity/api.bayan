@@ -1,0 +1,39 @@
+// Standard protocol-agnostic API specification from alkun.org
+
+IMPORT ct "https://alkun.org/bayan/common-type.bayan"
+
+OffsetPage = {                  // Offset based pagination (inclusive)
+    offset NUM : 0                          # offset or start index
+    limit ENUM (5 10 15 20 25 30) : 20      # Items per page
+}
+
+CursorPage = {                  // Cursor based pagination
+    after STR
+    before STR
+    limit = OffsetPage.limit
+}
+
+ResultSet = {
+    item []
+    total NUM               # Total result found, not applicable to cursor based
+    next                    # can be a STR (cursor) or NUM (offset)
+    SKIP next               # don't validate since it's arbitrary
+}
+
+
+Delete = {  # Common endpoint
+    request = {
+        eri = ct.Eri
+        apiKey STR
+        REQUIRED eri & apiKey
+    }
+}
+
+
+Query = {   # Index endpoint
+    request EXTEND OffsetPage & {
+        keyword STR <3>
+        order ENUM ("createdAt:asc" "createdAt:desc")
+    }
+    response EXTEND ResultSet
+}

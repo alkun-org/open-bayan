@@ -1,0 +1,66 @@
+IMPORT ct "https://alkun.org/bayan/common-type.bayan"
+IMPORT place "https://alkun.org/bayan/place.bayan"
+IMPORT api_ "https://alkun.org/bayan/api.bayan"
+
+entity = {
+    id = "people"
+    name = "People"
+    version = 23.06
+    createdAt = "2023-06-01"
+    status = "draft"
+
+    data EXTEND ct.Data & place.Address & place.Geo & {
+        fullName STR <2:64>
+        birthday DATE
+        gender ENUM ("male" "female")
+        phone STR
+        email = ct.Email
+        website URL                 # personal website
+        about STR <:500>
+        tag EXTEND ct.Tag [:20]
+        stat = ct.Stat
+    }
+
+    index = {
+        fulltext = ("fullName" "about" "city" "state" "region")
+        exact = ("createdAt" "country" "geo" "gender" "tag")
+    }
+
+    api = {
+        set = {
+            request = {
+                apiKey STR
+                data EXTEND entity.data & {
+                    NULLABLE birthday & gender & phone & email & website & about \
+                    & street & city & state & region & postalCode & postalBox & country \
+                    & latitude & longitude & elevation
+
+                    UNSET eri & createdAt & updatedAt & control
+                    REQUIRED fullName
+                }
+                REQUIRED apiKey & data
+            }
+        }
+
+        delete = {
+            request = {
+                apiKey STR
+                REQUIRED apiKey
+            }
+        }
+
+        query = {
+            request EXTEND api_.OffsetPage & {
+                keyword STR <3>
+                order ENUM ("createdAt:asc" "createdAt:desc" "fullName:asc" "fullName:desc")
+                select STR[]        # field to retrieve
+            }
+            response EXTEND api_.ResultSet & {
+                item = {
+                    highlight
+                    LOOSE true
+                }[]
+            }
+        }
+    }
+}

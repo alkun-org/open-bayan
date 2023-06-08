@@ -1,0 +1,19 @@
+// Place/location schemas
+
+IMPORT ct "https://alkun.org/bayan/common-type.bayan"
+
+Address = {
+    street STR
+    city STR
+    state STR
+    region STR
+    postalCode STR
+    postalBox STR               # Post-office box number
+    country = ct.Country
+}
+
+Geo = {
+    latitude NUM
+    longitude NUM
+    elevation NUM       # value in meters
+}

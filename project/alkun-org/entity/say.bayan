@@ -1,0 +1,117 @@
+IMPORT ct "https://alkun.org/bayan/common-type.bayan"
+IMPORT api_ "https://alkun.org/bayan/api.bayan"
+
+entity = {
+    id = "say"
+    name = "Say"
+    description = "A simple communication space"
+    version = 23.06
+    createdAt = "2023-06-01"
+    status = "draft"
+
+    data EXTEND ct.Data & {
+        title STR <10:150>
+        content STR <10:20000>
+        featImage = ct.Image        # 800px max wide, featured image for this post
+        poll = ct.Poll
+        tag EXTEND ct.Tag [1:5]
+        language = ct.Language
+
+        reaction = ct.Reaction
+        url URL                     # URL for this say
+        thumbnail = ct.Image
+        estimatedRead NUM           # In seconds, calc: (wordCount / 250 WordsPerMin) * 60sec
+        publish BOOL : true
+        stat = ct.Stat
+    }
+
+    index = {
+        fulltext = ("title" "content")
+        exact = ("createdAt" "updatedAt" "user" "tag" "language")  # user eg: "ahmad"
+    }
+
+    api = {
+        delete = api_.Delete
+
+        create = {
+            request = {
+                apiKey STR
+                title = entity.data.title
+                content = entity.data.content
+                featImage = entity.data.featImage
+                media EXTEND ct.Image [:8]      # attach media (only images for now) in your post
+                poll = ct.Poll
+                tag = entity.data.tag
+                language = ct.Language
+                publish = entity.data.publish
+
+                REQUIRED apiKey & title & tag & content | featImage | poll
+            }
+            response = {
+                eri = ct.Eri
+                url URL
+            }
+        }
+
+        update = {
+            request EXTEND entity.api.create.request & {
+                eri = ct.Eri
+                NULLABLE content & featImage & poll & language
+                REQUIRED eri & apiKey & title & tag & content | featImage | poll
+            }
+            response = {
+                url URL
+            }
+        }
+
+        query = {
+            request EXTEND api_.OffsetPage & {
+                keyword STR <3>     # search in title & content
+                user = ct.Eri
+                tag = entity.data.tag
+                language = ct.Language
+                order ENUM ("createdAt:asc" "createdAt:desc")
+            }
+            response EXTEND api_.ResultSet & {
+                item = {
+                    eri = ct.Eri
+                    title = entity.data.title
+                    tag = entity.data.tag
+                    url URL
+                    thumbnail = ct.Image
+                    snippet STR <:250>
+                    estimatedRead NUM
+                    createdAt DATE
+                    updatedAt DATE
+                }[]
+            }
+        }
+
+        react = {
+            request = {
+                eri = ct.Eri
+                apiKey STR
+                react = ct.React
+                REQUIRED eri & apiKey & react
+            }
+        }
+
+        pollVote = {
+            request = {
+                eri = ct.Eri
+                apiKey STR
+                vote = ct.PollVote
+                REQUIRED eri & apiKey & vote
+            }
+        }
+
+        publish = {
+            request = {  # Enable/disable item
+                eri = ct.Eri
+                apiKey STR
+                state BOOL
+                REQUIRED eri & apiKey & state
+            }
+        }
+    }
+}

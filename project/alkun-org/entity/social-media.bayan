@@ -1,0 +1,17 @@
+// Social media related
+
+PlatformTag = (
+    "facebook"
+    "github"
+    "instagram"
+    "linked-in"
+    "pinterest"
+    "reddit"
+    "snapchat"
+    "telegram"
+    "tiktok"
+    "twitter"
+    "website"
+    "whatsapp"
+    "youtube"
+)

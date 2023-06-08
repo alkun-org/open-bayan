@@ -1,0 +1,46 @@
+IMPORT ct "https://alkun.org/bayan/common-type.bayan"
+IMPORT api_ "https://alkun.org/bayan/api.bayan"
+
+entity = {
+    id = "journal"
+    name = "User journal"
+    description = "For storing shared data and settings"
+    version = 23.06
+    createdAt = "2023-06-01"
+    status = "draft"
+
+    data EXTEND ct.Data & {
+        private = {
+            entry = {
+                name STR
+                value
+                SKIP value
+            }
+            ARB /^[a-z0-9_]+$/ entry
+        }        
+    }
+
+    api = {
+        delete = {
+            request = {
+                eri = ct.Eri
+                apiKey STR
+                REQUIRED eri & apiKey
+            }
+        }
+
+        query = {
+            request EXTEND api_.CursorPage & {
+                eri = ct.Eri
+                apiKey STR
+                REQUIRED apiKey
+            }
+            response EXTEND api_.ResultSet & {
+                item = {
+                    eri = ct.Eri
+                    name STR
+                }[]
+            }
+        }
+    }
+}

@@ -1,0 +1,93 @@
+IMPORT ct "https://alkun.org/bayan/common-type.bayan"
+IMPORT api_ "https://alkun.org/bayan/api.bayan"
+
+entity = {
+    id = "platform"
+    name = "Platform support"
+    version = 23.06
+    createdAt = "2023-06-01"
+    status = "draft"
+
+    api = {
+        getBayan = {
+            request = {
+                name STR
+                REQUIRED name
+            }
+            response = {
+                dsl STR
+                json STR
+            }
+        }
+
+        compileBayan = {
+            request = {
+                dsl = {
+                    name STR            # filename to use for import
+                    source STR          # DSL source
+                } []
+                main STR                # which dsl to use as entry
+                REQUIRED dsl & main
+            }
+            response = {
+                json STR
+            }
+        }
+
+        get = {     # Direct data endpoint
+            request = {
+                eri = ct.Eri
+                apiKey STR
+                REQUIRED eri
+            }
+            response OBJ
+        }
+
+        query = {   # Generic search endpoint
+            request EXTEND api_.OffsetPage & {
+                select STR[] : ("eri")          # field to retrieve
+                entity STR                      # Entity to search, eg: "people"
+                Search = {                      # full-text search, <field> : "text", optional
+                    field STR <3>
+                    ARB /^[a-zA-Z0-9]+$/ field
+                }
+                matchAnd = {
+                    # <field> : value OR [value ...]
+                }[:5]
+
+                matchOr = {
+                    # <field> : value OR [value ...]
+                }[:5]
+
+                notAnd = {
+                    # <field> : value OR [value ...]
+                }[:5]
+
+                notOr = {
+                    # <field> : value OR [value ...]
+                }[:5]
+
+                order STR[:2]                   # ["<field>:<asc/desc>" ...]
+            }
+            response EXTEND api_.ResultSet & {
+                item = {
+                    highlight = {               # only from search field
+                        field STR
+                        ARB /^[a-zA-Z0-9]+$/ field
+                    }
+                    LOOSE true
+                }[]
+            }
+        }
+
+        control = {
+            request = {
+                eri = ct.Eri
+                apiKey STR
+                state = ct.Control
+                NULLABLE state
+                REQUIRED eri & apiKey & state
+            }
+        }
+    }
+}

@@ -1,0 +1,11 @@
+IMPORT ct "https://alkun.org/bayan/common-type.bayan"
+
+CreativeWork = {
+    creator STR []                  # Creator/author of this work
+    contributor STR []              # The contributors of this work
+    creditText STR<:1000>           # Can be used to credit person/organization associated with this work
+    license = {                     # Text or Url points to the license of this work
+        content STR STR<:500>
+        url URL
+    }
+}
