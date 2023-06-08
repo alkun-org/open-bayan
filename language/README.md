@@ -1,8 +1,8 @@
-# Al-Bayan
+# Bayan Language
 
-Al-Kun needs an open standard to define a format and specification for it's API and data. There are many proven open standards available out there (OpenAPI, Json-schema, RAML, Cue), however most of them are too verbose, ambiguous and somewhat complicated. After many iterations, we came up with a clean and concise DSL that average developer can quickly graps the concept called Al-Bayan (or just Bayan for simplicity).
+There are many proven open standards available out there (OpenAPI, Json-schema, RAML, Cue), however most of them are too verbose, ambiguous and somewhat complicated. After many iterations, we came up with a clean and concise DSL that average developer can quickly graps the concept called Al-Bayan (or just Bayan for simplicity).
 
-*This specification will be frozen by March 2023*
+*This specification will be frozen by July 2023*
 
 ### The language
 Bayan is a 2 part languages. First part is a compact **Bayan DSL** for us human and second part is a **Bayan JSON Schema** compiled from the former and optimized for computer processing. Now let's dive into these 2 formats.
@@ -318,14 +318,6 @@ house = {
 
 ## Reference Implementation
 
-Bayan specification was designed so it's easy to compose a schema by hand. You can see a reference implementation in ES6 [here](https://github.com/alkun-org/open-kun/blob/main/javascript/lib/bayan_util.js).
+This specification was designed so it's easy to compose a schema by hand. You can see a reference implementation in ES6 [here](https://github.com/alkun-org/open-bayan/blob/main/language/javascript/parser.js).
 
-Take a look at this [common-type.bayan](https://github.com/alkun-org/open-kun/blob/main/bayan/common-type.bayan) and the JSON generated using tool above [common-type.json](https://gist.github.com/alkun-org/017618d845a4f6850e1da48bd9cfe56f).
-
-
-## Al-Kun Endpoints
-
-Below are default endpoints for alkun.org
-
-1. Bayan - [https://alkun.org/bayan](https://alkun.org/bayan) - eg: [https://alkun.org/bayan/greeting.bayan](https://alkun.org/bayan/greeting.bayan)
-2. API host - [https://alkun.org/api](https://alkun.org/api)
+Take a look at this [common-type.bayan](https://github.com/alkun-org/open-bayan/blob/main/project/alkun-org/entity/common-type.bayan) and the JSON generated using tool above [common-type.json](https://gist.github.com/alkun-org/017618d845a4f6850e1da48bd9cfe56f).
