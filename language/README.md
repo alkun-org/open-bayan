@@ -1,6 +1,6 @@
 # Bayan Language
 
-There are many proven open standards available out there (OpenAPI, Json-schema, RAML, Cue), however most of them are too verbose, ambiguous and somewhat complicated. After many iterations, we came up with a clean and concise DSL that average developer can quickly graps the concept called Al-Bayan (or just Bayan for simplicity).
+There are many proven open standards available out there (OpenAPI, Json-schema, RAML, Cue), however most of them are too verbose, ambiguous and somewhat complicated. After many iterations, we came up with a clean and concise DSL that average developer can quickly graps the concept called Bayan Definition Language.
 
 *This specification will be frozen by July 2023*
 
