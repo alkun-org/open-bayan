@@ -1,4 +1,4 @@
-# open-bayan
+# Open Bayan
 Open Bayan is an Open protocol for Islamic Project.
 
 ## Official website
