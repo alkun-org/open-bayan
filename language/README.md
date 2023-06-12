@@ -318,6 +318,6 @@ house = {
 
 ## Reference Implementation
 
-This specification was designed so it's easy to compose a schema by hand. You can see a reference implementation in ES6 [here](https://github.com/alkun-org/open-bayan/blob/main/language/javascript/parser.js).
+This specification was designed to make it easy to compose a schema by hand. You can see a reference implementation in ES6 [here](https://github.com/alkun-org/open-bayan/blob/main/language/javascript/parser.js).
 
 Take a look at this [common-type.bayan](https://github.com/alkun-org/open-bayan/blob/main/project/alkun-org/entity/common-type.bayan) and the JSON generated using tool above [common-type.json](https://gist.github.com/alkun-org/017618d845a4f6850e1da48bd9cfe56f).
