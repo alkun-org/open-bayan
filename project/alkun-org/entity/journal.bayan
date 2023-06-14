@@ -1,6 +1,13 @@
 IMPORT ct "https://alkun.org/bayan/common-type.bayan"
 IMPORT api_ "https://alkun.org/bayan/api.bayan"
 
+Config = {
+    description = {
+        entry STR
+        ARB /^[a-z0-9_]+$/ entry
+    }
+}
+
 entity = {
     id = "journal"
     name = "User journal"
@@ -22,6 +29,7 @@ entity = {
 
     api = {
         delete = {
+            permission = ("owner")
             request = {
                 eri = ct.Eri
                 apiKey STR
@@ -30,6 +38,7 @@ entity = {
         }
 
         query = {
+            permission = ("owner")
             request EXTEND api_.CursorPage & {
                 eri = ct.Eri
                 apiKey STR

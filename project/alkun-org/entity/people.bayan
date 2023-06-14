@@ -18,16 +18,26 @@ entity = {
         website URL                 # personal website
         about STR <:500>
         tag EXTEND ct.Tag [:20]
-        stat = ct.Stat
+        view NUM
     }
 
     index = {
-        fulltext = ("fullName" "about" "city" "state" "region")
-        exact = ("createdAt" "country" "geo" "gender" "tag")
+        fullName STR <3>    # @fulltext
+        about STR <3>       # @fulltext
+        city STR            # @fulltext
+        state STR           # @fulltext
+
+        country = ct.Country
+        gender ENUM ("male" "female")
+        tag EXTEND ct.Tag [:20]
+        geo = place.Geo        # @geo
+
+        createdAt DATE
     }
 
     api = {
         set = {
+            permission = ("owner")
             request = {
                 apiKey STR
                 data EXTEND entity.data & {
@@ -43,23 +53,10 @@ entity = {
         }
 
         delete = {
+            permission = ("owner")
             request = {
                 apiKey STR
                 REQUIRED apiKey
-            }
-        }
-
-        query = {
-            request EXTEND api_.OffsetPage & {
-                keyword STR <3>
-                order ENUM ("createdAt:asc" "createdAt:desc" "fullName:asc" "fullName:desc")
-                select STR[]        # field to retrieve
-            }
-            response EXTEND api_.ResultSet & {
-                item = {
-                    highlight
-                    LOOSE true
-                }[]
             }
         }
     }

@@ -34,7 +34,10 @@ entity = {
             }
         }
 
-        get = {     # Direct data endpoint
+        get = {
+            # Direct access to entity-data object \
+            private fields will be omitted unless apiKey provided and caller is data owner
+
             request = {
                 eri = ct.Eri
                 apiKey STR
@@ -43,31 +46,20 @@ entity = {
             response OBJ
         }
 
-        query = {   # Generic search endpoint
+        query = {   # Generic entity search endpoint
             request EXTEND api_.OffsetPage & {
                 select STR[] : ("eri")          # field to retrieve
                 entity STR                      # Entity to search, eg: "people"
-                Search = {                      # full-text search, <field> : "text", optional
-                    field STR <3>
-                    ARB /^[a-zA-Z0-9]+$/ field
-                }
-                matchAnd = {
-                    # <field> : value OR [value ...]
-                }[:5]
+                search = STR <3>                # full-text search, <field> : "text", optional
+                searchIn STR[]
 
-                matchOr = {
-                    # <field> : value OR [value ...]
-                }[:5]
+                // filters, => <field> : value OR [value ...]
+                match = { LOOSE true }
+                matchAny = { LOOSE true }
+                not = { LOOSE true }
+                notAny = { LOOSE true }
 
-                notAnd = {
-                    # <field> : value OR [value ...]
-                }[:5]
-
-                notOr = {
-                    # <field> : value OR [value ...]
-                }[:5]
-
-                order STR[:2]                   # ["<field>:<asc/desc>" ...]
+                order STR[:2] /^\w+:(asc|desc)$/    # ["<field>:<asc/desc>" ...], eg: ["createdAt:asc"]
             }
             response EXTEND api_.ResultSet & {
                 item = {

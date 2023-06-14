@@ -2,6 +2,15 @@
 
 IMPORT ct "https://alkun.org/bayan/common-type.bayan"
 
+Api = {         # default API format
+    permission = ct.Tag[]
+    # preset tags \
+        owner               : user own the data
+
+    request OBJ
+    response OBJ
+}
+
 OffsetPage = {                  // Offset based pagination (inclusive)
     offset NUM : 0                          # offset or start index
     limit ENUM (5 10 15 20 25 30) : 20      # Items per page
@@ -22,6 +31,7 @@ ResultSet = {
 
 
 Delete = {  # Common endpoint
+    permission = ("owner")
     request = {
         eri = ct.Eri
         apiKey STR

@@ -18,22 +18,31 @@ entity = {
         language = ct.Language
 
         reaction = ct.Reaction
+        comment = ct.Comment
         url URL                     # URL for this say
         thumbnail = ct.Image
+        snippet STR                 # ~250 chars
         estimatedRead NUM           # In seconds, calc: (wordCount / 250 WordsPerMin) * 60sec
         publish BOOL : true
-        stat = ct.Stat
+        view NUM
     }
 
     index = {
-        fulltext = ("title" "content")
-        exact = ("createdAt" "updatedAt" "user" "tag" "language")  # user eg: "ahmad"
+        title STR <3>       # @fulltext
+        content STR <3>     # @fulltext
+
+        createdAt DATE
+        updatedAt DATE
+        user STR            # user eg: "ahmad"
+        tag EXTEND ct.Tag [1:5]
+        language = ct.Language
     }
 
     api = {
         delete = api_.Delete
 
         create = {
+            permission = ("owner")
             request = {
                 apiKey STR
                 title = entity.data.title
@@ -54,36 +63,15 @@ entity = {
         }
 
         update = {
+            permission = ("owner")
             request EXTEND entity.api.create.request & {
                 eri = ct.Eri
+                UNSET title     # title cannot be update, create new post instead
                 NULLABLE content & featImage & poll & language
-                REQUIRED eri & apiKey & title & tag & content | featImage | poll
+                REQUIRED eri & apiKey & tag & content | featImage | poll
             }
             response = {
                 url URL
-            }
-        }
-
-        query = {
-            request EXTEND api_.OffsetPage & {
-                keyword STR <3>     # search in title & content
-                user = ct.Eri
-                tag = entity.data.tag
-                language = ct.Language
-                order ENUM ("createdAt:asc" "createdAt:desc")
-            }
-            response EXTEND api_.ResultSet & {
-                item = {
-                    eri = ct.Eri
-                    title = entity.data.title
-                    tag = entity.data.tag
-                    url URL
-                    thumbnail = ct.Image
-                    snippet STR <:250>
-                    estimatedRead NUM
-                    createdAt DATE
-                    updatedAt DATE
-                }[]
             }
         }
 
@@ -106,6 +94,7 @@ entity = {
         }
 
         publish = {
+            permission = ("owner")
             request = {  # Enable/disable item
                 eri = ct.Eri
                 apiKey STR

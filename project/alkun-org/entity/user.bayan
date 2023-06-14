@@ -18,14 +18,13 @@ entity = {
         timezone = ct.Timezone
         currency = ct.Currency
 
+        tag EXTEND ct.Tag []            # user tags, eg: "suspended", "mod"
+
         private = {                     # owner with correct apiKey can view this
             recoveryQuestion STR <:64>
             apiKey STR                  # Your master key to use available APIs
             apiKeyCreatedAt             # API key creation/refresh date
             lastSignIn DATE             # to check account inactive or spam
-            conduct NUM                 # user conduct scores, bad scores may get suspend, \
-                                        good scores may skip submissions approval
-
             permission EXTEND ct.Tag []     # for various things such as moderator privilege
         }
 
@@ -39,6 +38,7 @@ entity = {
     }
 
     journal = {
+        SCHEMA = "https://alkun.org/bayan/journal.bayan#Config"     // optional, for schema validation
         description = {
             greeting = "Sample journal entry for new user, you may delete this"
         }
@@ -77,6 +77,7 @@ entity = {
         }
 
         refreshApiKey = {
+            permission = ("owner")
             request = {  # Generate new Api key
                 apiKey STR
                 REQUIRED apiKey
@@ -88,6 +89,7 @@ entity = {
         }
 
         changePassword = {
+            permission = ("owner")
             request = {
                 apiKey STR
                 currentPassword = entity.data.protected.password
@@ -99,7 +101,7 @@ entity = {
         recoveryQuestion = {
             request = {
                 eri = ct.Eri
-                REQUIRED userId
+                REQUIRED eri
             }
             response = {
                 question STR
@@ -117,14 +119,16 @@ entity = {
             }
         }
 
-        closeAccount = {            # No question/reason should be asked
-            request = {               # Request for permanently delete account
+        closeAccount = {        # Request for deleting account permanently
+            permission = ("owner")
+            request = {
                 apiKey STR
                 REQUIRED apiKey
             }
         }
 
         update = {
+            permission = ("owner")
             request = {
                 apiKey STR
                 data = {
@@ -139,6 +143,7 @@ entity = {
         }
 
         changeImage = {
+            permission = ("owner")      // "no-fresh-account"  - after 48hours account registered
             request = {
                 apiKey STR
                 image = ct.Image
@@ -151,6 +156,7 @@ entity = {
         }
 
         deleteImage = {
+            permission = ("owner")
             request = {
                 apiKey STR
                 REQUIRED apiKey
@@ -158,8 +164,9 @@ entity = {
         }
 
         changePermission = {
-            request = {  # You must have admin permission to call this
-                eri = ct.Eri
+            permission = ("admin")
+            request = {
+                eri = ct.Eri                    # user to change his permissions
                 apiKey STR
                 grant EXTEND ct.Tag []          # permissions to grant
                 revoke EXTEND ct.Tag []         # permissions to revoke

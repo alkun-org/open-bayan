@@ -47,10 +47,6 @@ Data = {       # Basic entity data structure
     control = Control
 }
 
-Stat = {
-    view NUM            // total view from platform/get
-}
-
 Reaction = {
     # Audience reaction
     like EXTEND Uid []               # List of Users
@@ -60,6 +56,16 @@ Reaction = {
 }
 
 React ENUM ("like" "dislike")
+
+Comment = {
+    id = Uuid
+    replyTo = Uuid       # Id of parent comment
+    user = Eri
+    content STR <5:400>
+    reaction = Reaction
+    createdAt DATE
+    updatedAt DATE
+}[]
 
 Poll = {
     option = {
