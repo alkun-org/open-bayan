@@ -30,12 +30,13 @@ entity = {
     index = {
         title STR <3>       # @fulltext
         content STR <3>     # @fulltext
-
+        user STR            # user eg: "ahmad"
         createdAt DATE
         updatedAt DATE
-        user STR            # user eg: "ahmad"
         tag EXTEND ct.Tag [1:5]
         language = ct.Language
+        reactionScore NUM
+        publish BOOL
     }
 
     api = {

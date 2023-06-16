@@ -51,8 +51,7 @@ Reaction = {
     # Audience reaction
     like EXTEND Uid []               # List of Users
     dislike EXTEND Uid []            # List of Users
-    likeCount NUM
-    dislikeCount NUM
+    score NUM : 0
 }
 
 React ENUM ("like" "dislike")
@@ -69,8 +68,8 @@ Comment = {
 
 Poll = {
     option = {
-        description STR
-        voteCount NUM
+        text STR
+        score NUM : 0
     }[:10]
 
     voter EXTEND Eri []              # List of Users

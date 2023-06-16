@@ -1,0 +1,47 @@
+IMPORT ct "https://alkun.org/bayan/common-type.bayan"
+IMPORT api_ "https://alkun.org/bayan/api.bayan"
+
+entity = {
+    id = "social"
+    name = "Social support"
+    version = 23.06
+    createdAt = "2023-06-01"
+    status = "draft"
+
+    api = {
+        react = {
+            request = {
+                eri = ct.Eri
+                apiKey STR
+                react = ct.React
+                REQUIRED eri & apiKey & react
+            }
+        }
+
+        pollVote = {
+            request = {
+                eri = ct.Eri
+                apiKey STR
+                vote = ct.PollVote
+                REQUIRED eri & apiKey & vote
+            }
+        }
+
+        follow = {
+            request {
+                eri = ct.Eri
+                apiKey STR
+                REQUIRED eri & apiKey
+            }
+        }
+
+        bookmark = {
+            request {
+                eri = ct.Eri
+                apiKey STR
+                REQUIRED eri & apiKey
+            }
+        }
+
+    }
+}
