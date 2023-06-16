@@ -76,24 +76,6 @@ entity = {
             }
         }
 
-        react = {
-            request = {
-                eri = ct.Eri
-                apiKey STR
-                react = ct.React
-                REQUIRED eri & apiKey & react
-            }
-        }
-
-        pollVote = {
-            request = {
-                eri = ct.Eri
-                apiKey STR
-                vote = ct.PollVote
-                REQUIRED eri & apiKey & vote
-            }
-        }
-
         publish = {
             permission = ("owner")
             request = {  # Enable/disable item
