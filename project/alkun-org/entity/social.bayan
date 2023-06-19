@@ -18,6 +18,30 @@ entity = {
             }
         }
 
+        comment = {
+            request = {
+                eri = ct.Eri
+                apiKey STR
+                id = ct.Comment.id          # for edit
+                replyTo = ct.Comment.replyTo
+                content = ct.Comment.content
+                REQUIRED eri & apiKey & content
+            }
+            response = {
+                id = ct.Comment.id
+            }
+        }
+
+        commentReact = {
+            request = {
+                eri = ct.Eri
+                id = ct.Comment.id
+                apiKey STR
+                react = ct.React
+                REQUIRED eri & id & apiKey & react
+            }
+        }
+
         pollVote = {
             request = {
                 eri = ct.Eri
@@ -28,7 +52,7 @@ entity = {
         }
 
         follow = {
-            request {
+            request = {
                 eri = ct.Eri
                 apiKey STR
                 REQUIRED eri & apiKey
@@ -36,7 +60,7 @@ entity = {
         }
 
         bookmark = {
-            request {
+            request = {
                 eri = ct.Eri
                 apiKey STR
                 REQUIRED eri & apiKey

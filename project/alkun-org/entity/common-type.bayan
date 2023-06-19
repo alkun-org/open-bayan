@@ -49,12 +49,12 @@ Data = {       # Basic entity data structure
 
 Reaction = {
     # Audience reaction
-    like EXTEND Uid []               # List of Users
-    dislike EXTEND Uid []            # List of Users
+    like EXTEND Uid []              # List of Users
+    dislike EXTEND Uid []           # List of Users
     score NUM : 0
 }
 
-React ENUM ("like" "dislike")
+React ENUM ("like" "dislike", "none")
 
 Comment = {
     id = Uuid
