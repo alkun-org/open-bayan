@@ -23,7 +23,6 @@ entity = {
         thumbnail = ct.Image
         snippet STR                 # ~250 chars
         estimatedRead NUM           # In seconds, calc: (wordCount / 250 WordsPerMin) * 60sec
-        publish BOOL : true
         view NUM
     }
 
@@ -31,12 +30,14 @@ entity = {
         title STR <3>       # @fulltext
         content STR <3>     # @fulltext
         user STR            # user eg: "ahmad"
-        createdAt DATE
-        updatedAt DATE
         tag EXTEND ct.Tag [1:5]
         language = ct.Language
         reactionScore NUM
-        publish BOOL
+
+        createdAt DATE
+        updatedAt DATE
+        hide BOOL
+        control = ct.Data.control
     }
 
     api = {
@@ -53,7 +54,7 @@ entity = {
                 poll = ct.Poll
                 tag = entity.data.tag
                 language = ct.Language
-                publish = entity.data.publish
+                hide BOOL
 
                 REQUIRED apiKey & title & tag & content | featImage | poll
             }
@@ -73,16 +74,6 @@ entity = {
             }
             response = {
                 url URL
-            }
-        }
-
-        publish = {
-            permission = ("owner")
-            request = {  # Enable/disable item
-                eri = ct.Eri
-                apiKey STR
-                state BOOL
-                REQUIRED eri & apiKey & state
             }
         }
     }

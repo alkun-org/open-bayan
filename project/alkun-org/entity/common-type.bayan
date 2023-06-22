@@ -44,7 +44,15 @@ Data = {       # Basic entity data structure
     eri = Eri
     createdAt DATE
     updatedAt DATE
-    control = Control
+    hide BOOL              # true to hide from public (for draft, etc)
+    control ENUM ("ok" "pending" "suspend" "removal")   # admin/mod only
+    verify = {
+        provider = Eri      # verification body must have a valid user account
+        id STR              # certificate or verification Id
+        url URL
+        validFrom DATE
+        validTo DATE
+    }[]
 }
 
 Reaction = {

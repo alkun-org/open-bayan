@@ -33,6 +33,8 @@ entity = {
         geo = place.Geo        # @geo
 
         createdAt DATE
+        hide BOOL
+        control = ct.Data.control
     }
 
     api = {
@@ -46,7 +48,6 @@ entity = {
                     & latitude & longitude & elevation
 
                     UNSET eri & createdAt & updatedAt & control
-                    REQUIRED fullName
                 }
                 REQUIRED apiKey & data
             }

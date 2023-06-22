@@ -72,12 +72,22 @@ entity = {
             }
         }
 
+        hide = {
+            permission = ("owner")
+            request = {  # Enable/disable item
+                eri = ct.Eri
+                apiKey STR
+                state BOOL
+                REQUIRED eri & apiKey & state
+            }
+        }
+
         control = {
+            permission = ("admin" "mod")
             request = {
                 eri = ct.Eri
                 apiKey STR
-                state = ct.Control
-                NULLABLE state
+                state = ct.Data.control
                 REQUIRED eri & apiKey & state
             }
         }
