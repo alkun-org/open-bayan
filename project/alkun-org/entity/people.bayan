@@ -43,10 +43,6 @@ entity = {
             request = {
                 apiKey STR
                 data EXTEND entity.data & {
-                    NULLABLE birthday & gender & phone & email & website & about \
-                    & street & city & state & region & postalCode & postalBox & country \
-                    & latitude & longitude & elevation
-
                     UNSET eri & createdAt & updatedAt & control
                 }
                 REQUIRED apiKey & data

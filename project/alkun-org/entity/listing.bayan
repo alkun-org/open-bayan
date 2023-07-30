@@ -1,40 +1,66 @@
 IMPORT ct "https://alkun.org/bayan/common-type.bayan"
 IMPORT api_ "https://alkun.org/bayan/api.bayan"
+IMPORT place "https://alkun.org/bayan/place.bayan"
 
 entity = {
-    id = "say"
-    name = "Say"
-    description = "A simple communication space"
+    id = "listing"
+    name = "Listing"
+    description = "Buy, Sell, Trade or Promote"
     version = 23.06
     createdAt = "2023-06-01"
     status = "draft"
 
-    data EXTEND ct.Data & {
-        type ENUM ("text" "image" "link" "poll") : "text"
+    data EXTEND ct.Data & place.Address & place.Geo & {
         tag EXTEND ct.Tag [1:20]
         title STR <10:150>
         text STR <10:10000>
         media EXTEND ct.Image [:5]  # embedded images for text, 800px max wide
-        link URL
-        poll = ct.Poll
+
         language = ct.Language
+        currency = ct.Currency
+
+        phone STR
+        email = ct.Email
+        website URL
+
+        refId STR                   # product Id, etc
+        price NUM
+        begin DATE                  # Date range, useful for launch, expiry, completion, etc
+        end DATE
+
+        uom STR <2:2>               # Unit of measurement (ANSI X12)
+        quantity NUM
 
         reaction = ct.Reaction
         comment = ct.Comment
-        url URL                     # URL for this say
+        url URL                     # URL for this post
         thumbnail = ct.Image
         snippet STR                 # ~250 chars
-        estimatedRead NUM           # In seconds, calc: (wordCount / 250 WordsPerMin) * 60sec
         view NUM
     }
 
     index = {
-        type STR
         tag EXTEND ct.Tag [1:20]
         title STR <3>       # @fulltext
         text STR <3>        # @fulltext
         user STR            # user eg: "ahmad"
+
         language = ct.Language
+        currency STR <3:3>
+
+        refId STR
+        price NUM
+        begin DATE
+        end DATE
+
+        uom STR <2:2>
+        quantity NUM
+
+        city STR            # @fulltext
+        state STR           # @fulltext
+        country = ct.Country
+        geo = place.Geo        # @geo
+
         reactionScore NUM
 
         createdAt DATE
@@ -48,19 +74,11 @@ entity = {
 
         create = {
             permission = ("owner")
-            request = {
+            request EXTEND entity.data & {
                 apiKey STR
-                type = entity.data.type
-                tag = entity.data.tag
-                title = entity.data.title
-                text = entity.data.text
-                media = entity.data.media
-                link URL
-                poll = ct.Poll
-                language = ct.Language
-                hide BOOL
-
-                REQUIRED apiKey & type & tag & title & text | media | link | poll
+                UNSET eri & createdAt & updatedAt & control & verify \
+                    & reaction & comment & url & thumbnail & snippet & view
+                REQUIRED apiKey & tag & title & text | media
             }
             response = {
                 eri = ct.Eri
@@ -72,8 +90,8 @@ entity = {
             permission = ("owner")
             request EXTEND entity.api.create.request & {
                 eri = ct.Eri
-                UNSET type & title     # type & title cannot be change, create new post instead
-                REQUIRED eri & apiKey & tag & text | media | link | poll
+                UNSET title
+                REQUIRED eri & apiKey & tag & text | media
             }
             response = {
                 url URL

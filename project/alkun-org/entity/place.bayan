@@ -6,7 +6,6 @@ Address = {
     street STR
     city STR
     state STR
-    region STR
     postalCode STR
     postalBox STR               # Post-office box number
     country = ct.Country

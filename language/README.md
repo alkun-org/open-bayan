@@ -2,7 +2,7 @@
 
 There are many proven open standards available out there (OpenAPI, Json-schema, RAML, Cue), however most of them are too verbose, ambiguous and somewhat complicated. After many iterations, we came up with a clean and concise DSL that average developer can quickly graps the concept called Bayan Definition Language.
 
-*This specification will be frozen by July 2023*
+*This specification was **frozen** on 30, July 2023.
 
 ### The language
 Bayan is a 2 part languages. First part is a compact **Bayan DSL** for us human and second part is a **Bayan JSON Schema** compiled from the former and optimized for computer processing. Now let's dive into these 2 formats.
@@ -26,51 +26,49 @@ Bayan is a 2 part languages. First part is a compact **Bayan DSL** for us human 
 This is a valid JSON documents with "*.json*" extension. For optimization and compression, we also use CBOR serialization format (We use it for some *Box*, our own archive specification). 
 
 ### Reserved Keywords
-TIP, TYPE, NULLABLE, DEFAULT, REQUIRED, SKIP, LOOSE, SCHEMA,
-NULL, STR, NUM, BOOL, OBJ, URL, DATE, TIME, ENUM, CONST,
+TIP, TYPE, DEFAULT, REQUIRED, SKIP, LOOSE, SCHEMA,
+STR, NUM, BOOL, OBJ, URL, DATE, TIME, ENUM, CONST,
 MIX, MAX, MINLEN, MAXLEN, ARRAY, PATTERN
 
 1. **TIP (string)** - an inline comment for current object.
 
 2. **TYPE (string)** - to define current object's data type. Eg: `"TYPE": "STR"`
 
-3. **NULLABLE (boolean)** - Boolean "true" tells validator this value accepts a *null*.
+3. **DEFAULT** - Tells validator to use this value if not provided.
 
-4. **DEFAULT** - Tells validator to use this value if not provided.
+4. **REQUIRED (string[])** - Property that must be included, no matter if values is empty or null. Use sub-array for either one of the property, eg: `"REQUIRED": ["name", ["age", "dob"], "hobby"]`, here *name* and *hobby* are mandatory, but for *age* and *dob* can be either one of them or both.
 
-5. **REQUIRED (string[])** - Property that must be included, no matter if values is empty or null. Use sub-array for either one of the property, eg: `"REQUIRED": ["name", ["age", "dob"], "hobby"]`, here *name* and *hobby* are mandatory, but for *age* and *dob* can be either one of them or both.
+5. **SKIP (string[])** - Tells validator to skip or ignore this properties.
 
-6. **SKIP (string[])** - Tells validator to skip or ignore this properties.
+6. **LOOSE (boolean)** - Allow an object to have additional properties not defined inside schema.
 
-7. **LOOSE (boolean)** - Allow an object to have additional properties not defined inside schema.
-
-8. **ARB (string[[regex, string]])** - Allow pattern matching on arbitrary properties, eg:
+7. **ARB (string[[regex, string]])** - Allow pattern matching on arbitrary properties, eg:
 ```
 "myProp": { "TYPE": "STR" }
 "ARB": [["^\w+$", "myProp"]]
 ````
 
-9. **SCHEMA (string)** - URL or anchor to bayan object for validation purposes, eg: `"SCHEMA": "#person"`.
+8. **SCHEMA (string)** - URL or anchor to bayan object for validation purposes, eg: `"SCHEMA": "#person"`.
 
-10. **NULL/STR/NUM/BOOL/OBJ** - Use in defining a valid JSON datatypes type, eg: `"TYPE": "NUM"`.
+9. **STR/NUM/BOOL/OBJ** - Use in defining a valid JSON datatypes type, eg: `"TYPE": "NUM"`.
 
-11. **URL (string)** - a custom datatype for URL.
+10. **URL (string)** - a custom datatype for URL.
 
-12. **DATE (string)** - a custom datatype for a date /datetime in ISO 8601 format.
+11. **DATE (string)** - a custom datatype for a date /datetime in ISO 8601 format.
 
-13. **TIME (string)** - a custom datatype for a time in format  `hh:mm:ss[Z|(+|-)hh:mm]`.
+12. **TIME (string)** - a custom datatype for a time in format  `hh:mm:ss[Z|(+|-)hh:mm]`.
 
-14. **ENUM (string[]/number[])** - a custom datatype for an array of fixed values / enumerates, eg: `"ENUM": ["hello", "world"]`. Default type is `"TYPE": "ENUM"`. Array cannot mix types.
+13. **ENUM (string[]/number[])** - a custom datatype for an array of fixed values / enumerates, eg: `"ENUM": ["hello", "world"]`. Default type is `"TYPE": "ENUM"`. Array cannot mix types.
 
-15. **CONST (string/number/bool)** - define a fixed value, eg: `"CONST": "hello"`. Default type is `"TYPE": "CONST"`.
+14. **CONST (string/number/bool)** - define a fixed value, eg: `"CONST": "hello"`. Default type is `"TYPE": "CONST"`.
 
-16. **MIN/MAX (number)** - If type is STR, this will limit the string value, if numbers it will limit the number's range inclusive, eg: `"MIN": 10`. 
+15. **MIN/MAX (number)** - If type is STR, this will limit the string value, if numbers it will limit the number's range inclusive, eg: `"MIN": 10`. 
 
-17. **MINLEN/MAXLEN (number)** - Limit an array length inclusive. 
+16. **MINLEN/MAXLEN (number)** - Limit an array length inclusive. 
 
-18. **ARRAY (boolean)** - To tell this property is an array, use together with MINLEN/MAXLEN.
+17. **ARRAY (boolean)** - To tell this property is an array, use together with MINLEN/MAXLEN.
 
-19. **PATTERN (regex)** - To allow particular string patterns only, eg: `"TYPE": "STR", "PATTERN": "^[A-Za-z_]+$"`.
+18. **PATTERN (regex)** - To allow particular string patterns only, eg: `"TYPE": "STR", "PATTERN": "^[A-Za-z_]+$"`.
 
 
 Scroll down for details on validation and example.
@@ -146,9 +144,6 @@ Use ":" at end of definition to add a default value, eg: `name STR<2:32> : "Abdu
 
 ### Defining a constant
 Use colon with equal symbol ":=" to define a constant value, eg: `name := "Abdul"`
-
-### Multiple nullable declaration
-Using DSL you can do `NULLABLE talent & hobby` instead of true, which will inject `"NULLABLE": true` to the given properties. 
 
 ### OBJECT and TUPLE
 Object use for grouping multiple properties together. Keep in mind that **Object and Tuple are immutable (don't change) upon creation**.

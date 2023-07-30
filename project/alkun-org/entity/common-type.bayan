@@ -25,6 +25,7 @@ Timezone STR                            # Timezone in format <(+01:00) location/
 Currency STR <3:3> /^[A-Z]+$/           # ISO 4217 currency code
 
 Media = {
+    name STR                            # optional name for various use case
     mediaType STR
     content STR     # base64 string in json, binary in CBOR
     url URL
@@ -36,9 +37,6 @@ Image EXTEND Media & {
     width NUM
     height NUM
 }
-
-// control block entities, remove control to enable them
-Control ENUM ("pending" "suspend" "removal")
 
 Data = {       # Basic entity data structure
     eri = Eri
@@ -76,9 +74,9 @@ Comment = {
 
 Poll = {
     option = {
-        text STR
+        text STR <2:20>
         score NUM : 0
-    }[:10]
+    }[2:10]
 
     voter EXTEND Eri []              # List of Users
     period NUM   # in seconds before poll close

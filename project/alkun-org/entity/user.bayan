@@ -19,6 +19,7 @@ entity = {
         currency = ct.Currency
 
         tag EXTEND ct.Tag []            # user tags, eg: "suspended", "mod"
+        sub EXTEND ct.Tag [:50]         # Joined sub-space
 
         private = {                     # owner with correct apiKey can view this
             recoveryQuestion STR <:64>
@@ -136,7 +137,6 @@ entity = {
                     language = entity.data.language
                     timezone = entity.data.timezone
                     currency = entity.data.currency
-                    NULLABLE language & currency & timezone
                 }
                 REQUIRED apiKey & data
             }

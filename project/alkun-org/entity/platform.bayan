@@ -48,18 +48,14 @@ entity = {
 
         query = {   # Generic entity search endpoint
             request EXTEND api_.OffsetPage & {
-                select STR[] : ("eri")          # field to retrieve
+                apiKey STR
+                select STR : ("eri")            # field to retrieve in ERI field format
                 entity STR                      # Entity to search, eg: "people"
                 search = STR <3>                # full-text search, <field> : "text", optional
                 searchIn STR[]
-
-                // filters, => <field> : value OR [value ...]
-                match = { LOOSE true }
-                matchAny = { LOOSE true }
-                not = { LOOSE true }
-                notAny = { LOOSE true }
-
-                order STR[:2] /^\w+:(asc|desc)$/    # ["<field>:<asc/desc>" ...], eg: ["createdAt:asc"]
+                filter STR                          # filter string (refer Bayan Query DSL)
+                order STR[:2] /^\w+(\(\-?\d*\.?\d*\,\-?\d*\.?\d*\))?:(asc|desc)$/    # ["<field><(lat,lon)>:<asc/desc>" ...], eg: ["createdAt:asc", "geo(-1.23,3.45):asc"]
+                REQUIRED entity & select
             }
             response EXTEND api_.ResultSet & {
                 item = {
