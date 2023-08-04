@@ -51,7 +51,30 @@ entity = {
             }
         }
 
-        follow = {
+        setBookmark = {
+            permission = ("owner")
+            request = {
+                eri = ct.Eri
+                apiKey STR
+                title STR
+                REQUIRED eri & apiKey & title
+            }
+        }
+
+        getBookmark = {
+            permission = ("owner")
+            request = {
+                eri = ct.Eri
+                apiKey STR
+                REQUIRED eri & apiKey
+            }
+            response = {
+                title STR
+            }
+        }
+
+        deleteBookmark = {
+            permission = ("owner")
             request = {
                 eri = ct.Eri
                 apiKey STR
@@ -59,13 +82,18 @@ entity = {
             }
         }
 
-        bookmark = {
-            request = {
-                eri = ct.Eri
+        queryBookmark = {
+            permission = ("owner")
+            request EXTEND api_.OffsetPage & {
                 apiKey STR
-                REQUIRED eri & apiKey
+                REQUIRED apiKey
+            }
+            response EXTEND api_.ResultSet & {
+                item = {
+                    eri = ct.Eri
+                    title STR
+                }[]
             }
         }
-
     }
 }
